@@ -15,4 +15,4 @@ all:
 	# g++ -o vulcan vulcan.c -lglfw -lglew $(FLAGS) -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
 	# g++ -o multiple_plots multiple_plots.cc -lglfw -lglew $(FLAGS) -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
 	#gcc -o graph graph.c -lglfw -lglew $(FLAGS) -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
-	g++ -o multiple_windows multiple_windows.cc -stdlib=libc++ -lglfw -lglew $(FLAGS) -I$(GLM_PATH)/include/ -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
+	g++ -o multiple_windows multiple_windows.cc -stdlib=libc++ -lglfw -lglew $(FLAGS) -I. -I$(GLM_PATH)/include/ -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
