@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/kmrocki/git/nanogui-test/build/shader/frag.glsl.c
+stdlib.h
+-
+
+/Users/kmrocki/git/nanogui-test/build/shader/vert.glsl.c
+stdlib.h
+-
+
