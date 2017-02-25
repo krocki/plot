@@ -1,24 +1,3 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/xhtml;charset=utf-8" />
-<meta name="keywords" content="ray marching, raymarching, sphere tracing" />
-<meta name="description" content="Raymarching in WebGL - Bump mapping | Raymarching.com" />
-<meta name="author" content="Gary S Warne" />
-<meta name="robots" content="all" />
-<title>Raymarching in WebGL - Displacement mapping | Raymarching.com</title>
-<style type="text/css">
-    body{margin:50px;font-family:Helvetica, Arial;font-size:15px;line-height:25px;color:#000;}
-    h1{font-family:Georgia, "Sans-Serif";font-size:17px;font-style:italic;margin-bottom:25px;font-weight:400;}
-    h2{font-size:32px;margin-bottom:35px;letter-spacing:-1px;}
-    a.siteName{text-decoration:none;color:#000;}
-    a.siteName:hover{text-decoration:underline;}
-    canvas{background:#fcfcfc;margin-bottom:25px;border:#ccc 1px solid; padding:7px; box-shadow: 0px 4px 18px #ccc;}
-</style>
-
-<script type="text/javascript">
-
 // Self contained WebGL Template
 // Source - Raymarching.com
 // Author - Gary "Shane" Warne
@@ -725,17 +704,3 @@ void main(void) {
 	gl_FragColor = vec4(clamp(sceneColor, 0.0, 1.0), 1.0);
 	
 }
-
-</script>
-</head>
-<body>
-
-<h1><a class="siteName" href="http://Raymarching.com">Raymarching.com</a></h1>
-
-<h2 id="heading">Raymarching - Displacement Mapping</h2>
-
-<canvas id="canvas" width="600" height="420"></canvas>
-
-<div id="info"></div>
-
-</body></html>
