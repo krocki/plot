@@ -30,16 +30,20 @@ all:
 
 	# nanovg
 	# gcc -c ./nanovg/nanovg.c $(CFLAGS) -o ./nanovg/nanovg.o
-	# gcc -c perf.c $(CFLAGS) -o perf.o -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ 
-	# gcc -c demo.c $(CFLAGS) -o demo.o -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ 
+	gcc -c perf.c $(CFLAGS) -o perf.o -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ 
+	gcc -c demo.c $(CFLAGS) -o demo.o -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ 
 
 	# gcc example_gl2.c -o nanovg_gl2 perf.o demo.o ./nanovg/nanovg.o $(CFLAGS) -lglfw -lglew -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
 	# gcc example_gl3.c -o nanovg_gl3 perf.o demo.o ./nanovg/nanovg.o $(CFLAGS) -lglfw -lglew -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
 	# gcc example_fbo.c -o nanovg_fbo perf.o demo.o ./nanovg/nanovg.o $(CFLAGS) -lglfw -lglew -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
-	# gcc nanovg_minimum.cc -o nanovg_minimum perf.o demo.o ./nanovg/nanovg.o $(CFLAGS) -lglfw -lglew -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
+	# 
+
+	# gcc -o nanovg_minimum nanovg_minimum.cc perf.o demo.o ./nanovg/nanovg.o $(CFLAGS) -lglfw -lglew -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
+	g++ -o nvtop nvtop.cc perf.o demo.o ./nanovg/nanovg.o -std=c++14 -O3 -lglfw -lglew -I. -I$(GLEW_PATH)/include/ -I$(GLFW_PATH)/include/ -L$(GLFW_PATH)/lib/ -L$(GLEW_PATH)/lib/ -framework Cocoa -framework OpenGL -framework IOKit
+	g++ -o nanogui_minimum nanogui_minimum.cc --std=c++14 -stdlib=libc++ -L/usr/local/lib/ -I$(NANOVG_PATH) -I/usr/local/include -I$(EIGEN_PATH)/include/eigen3/ -lnanogui -framework Cocoa -framework OpenGL -framework IOKit
 
 	#nanogui
 	# g++ -std=c++11 -stdlib=libc++ -L/usr/local/lib/ -I$(NANOVG_PATH) -I/usr/local/include -I$(EIGEN_PATH)/include/eigen3/ -o nanogui_test nanogui_test.cc -lnanogui -framework Cocoa -framework OpenGL -framework IOKit
 
-	g++ -std=c++11 -stdlib=libc++ -L/usr/local/lib/ -I$(NANOVG_PATH) -I/usr/local/include -I$(EIGEN_PATH)/include/eigen3/ -o nanogui_example1 example1.cc -lnanogui -framework Cocoa -framework OpenGL -framework IOKit
-	g++ -std=c++11 -stdlib=libc++ -L/usr/local/lib/ -I$(NANOVG_PATH) -I/usr/local/include -I$(EIGEN_PATH)/include/eigen3/ -o nanogui_example4 example4.cc -lnanogui -framework Cocoa -framework OpenGL -framework IOKit
+	# g++ -o nanogui_example1 example1.cc -std=c++11 -stdlib=libc++ -L/usr/local/lib/ -I$(NANOVG_PATH) -I/usr/local/include -I$(EIGEN_PATH)/include/eigen3/ -lnanogui -framework Cocoa -framework OpenGL -framework IOKit
+	# g++ -o nanogui_example4 example4.cc -std=c++11 -stdlib=libc++ -L/usr/local/lib/ -I$(NANOVG_PATH) -I/usr/local/include -I$(EIGEN_PATH)/include/eigen3/ -lnanogui -framework Cocoa -framework OpenGL -framework IOKit
