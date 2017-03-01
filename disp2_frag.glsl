@@ -12,7 +12,7 @@
 // eMail - mail@Raymarching.com, mail@Labyrinth.com
 // Last update: 28th Aug, 2014
 
-uniform float modulation;
+uniform float time;
 uniform vec2 resolution;
 uniform vec4 mouse;
 
@@ -30,9 +30,9 @@ float sphere ( in vec3 p, in vec3 centerPos, float radius ) {
 }
 
 float sinusoidBumps ( in vec3 p ) {
-	return sin ( p.x * 16. + modulation * 0.57 ) * cos ( p.y * 16. + modulation * 2.17 ) * sin (
-			   p.z * 16. - modulation * 1.31 ) + 0.5 * sin ( p.x * 32. + modulation * 0.07 ) * cos (
-			   p.y * 32. + modulation * 2.11 ) * sin ( p.z * 32. - modulation * 1.23 );
+	return sin ( p.x * 16. + time * 0.57 ) * cos ( p.y * 16. + time * 2.17 ) * sin (
+			   p.z * 16. - time * 1.31 ) + 0.5 * sin ( p.x * 32. + time * 0.07 ) * cos (
+			   p.y * 32. + time * 2.11 ) * sin ( p.z * 32. - time * 1.23 );
 }
 
 float scene ( in vec3 p ) {
@@ -111,7 +111,7 @@ void main ( void ) {
 	
 	// Lighting.
 	// lp - Light position.
-	vec3 lp = vec3 ( 1.5 * sin ( modulation * 0.5 ), 0.75 + 0.25 * cos ( modulation * 0.5 ), -1.0 );
+	vec3 lp = vec3 ( 1.5 * sin ( time * 0.5 ), 0.75 + 0.25 * cos ( time * 0.5 ), -1.0 );
 	// ld - Light direction.
 	vec3 ld = lp - sp;
 	// lcolor - Light color.
