@@ -2,7 +2,7 @@
 * @Author: krocki
 * @Date:   2017-02-23 20:47:29
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-02-24 16:00:15
+* @Last Modified time: 2017-02-28 11:22:45
 */
 
 #include <thread>
@@ -79,17 +79,14 @@ int test ( int i ) {
 
 	struct timeval tv;
 	
-	long wait = 10000;
+	long wait = 100;
 	
 	while ( !glfwWindowShouldClose ( window ) ) {
 	
 		toc[i + 1] = get_time();
 		cpuTime[i + 1] = toc[i + 1] - tic[i + 1];
 		tic[i + 1] = get_time();
-		// how busy is this thread
-		double perc_free = 100.0 * ( ( double ) wait / ( double ) 1e6 ) / cpuTime[i + 1];
-		printf ( "%d %f %f\n", i, perc_free, cpuTime[i + 1] );
-		updateGraph ( &cpuGraph[i + 1], perc_free );
+		updateGraph ( &cpuGraph[i + 1], cpuTime[i + 1] );
 		
 		usleep ( wait );
 		
@@ -116,7 +113,7 @@ int main() {
 	
 		char str[32];
 		sprintf ( str, "Aux Thread %d Time", i );
-		initGraph ( &cpuGraph[i + 1], GRAPH_RENDER_PERCENT, str );
+		initGraph ( &cpuGraph[i + 1], GRAPH_RENDER_MS, str );
 		
 	}
 	
