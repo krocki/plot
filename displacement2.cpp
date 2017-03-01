@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-01 11:36:21
+* @Last Modified time: 2017-03-01 14:12:18
 */
 
 #include <iostream>
@@ -75,7 +75,7 @@ int num_frames = 0;
 #define HISTORY_SIZE 100
 std::vector<float> FPS ( HISTORY_SIZE, 0 );
 
-float fps_scale = 0.005f;
+float fps_scale = 0.0005f;
 
 void update_FPS ( void ) {
 
@@ -163,16 +163,20 @@ class DisplacementMap : public nanogui::Screen {
 			slider->setCallback ( [this] ( float value ) { this->modulation = value * 10.0f; } );
 			
 			graphDyn = window->add<nanogui::Graph> ( "FPS" );
+			graphDyn->setSize ( {100, 20} );
 			graphDyn->values().resize ( HISTORY_SIZE );
-			graphDyn->setForegroundColor ( nanogui::Color ( 255, 192, 0, 64 ) );
+			graphDyn->setGraphColor ( nanogui::Color ( 0, 160, 192, 255 ) );
+			graphDyn->setFill ( false );
 			
 			/* console */
 			int console_width = 350;
 			int console_height = mFBSize[1] - 10;
+			show_console = false;
 			
 			window_test = new Window ( this, "" );
 			window_test->setPosition ( {mFBSize[0] - console_width - 5, 5} );
 			window_test->setSize ( {console_width, console_height} );
+			window_test->setVisible ( show_console );
 			// window_test->setLayout ( new GroupLayout ( 5, 5, 0, 0 ) );
 			console_test = new nanogui::Console ( window_test );
 			console_test->setPosition ( {5, 5} );
@@ -191,14 +195,11 @@ class DisplacementMap : public nanogui::Screen {
 			// t_console->mWindowFillUnfocused = nanogui::Color ( 128, 128, 128, 32 );
 			// w_console->setTheme ( t_console );
 			
-			// show_console = false;
 			// w_console->setVisible ( show_console );
 			
 			// console_text = w_console->add<nanogui::Console> ( "Log" );
 			// console_text->setSize ( {150, 300} );
 			// console_text->setFontSize ( 10 );
-			
-			
 			
 			performLayout();
 			
