@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-01 14:12:18
+* @Last Modified time: 2017-03-01 14:19:23
 */
 
 #include <iostream>
@@ -100,7 +100,7 @@ void update_FPS ( void ) {
 class DisplacementMap : public nanogui::Screen {
 	public:
 		DisplacementMap ( bool fullscreen = false, int aliasing_samples = 4 ) :
-			nanogui::Screen ( Eigen::Vector2i ( 1024, 768 ),
+			nanogui::Screen ( Eigen::Vector2i ( 2 * 1024, 2 * 768 ),
 							  "NanoGUI Test", true, fullscreen, 8, 8, 24, 8, aliasing_samples,
 							  3, 3 ) {
 							  
@@ -162,8 +162,11 @@ class DisplacementMap : public nanogui::Screen {
 			modulation = 5.0f;
 			slider->setCallback ( [this] ( float value ) { this->modulation = value * 10.0f; } );
 			
-			graphDyn = window->add<nanogui::Graph> ( "FPS" );
-			graphDyn->setSize ( {100, 20} );
+			int graph_width = 100;
+			int graph_height = 20;
+			graphDyn = add<nanogui::Graph> ( "FPS" );
+			graphDyn->setPosition ( {5, mFBSize[1] - graph_height - 5} );
+			graphDyn->setSize ( {graph_width, graph_height } );
 			graphDyn->values().resize ( HISTORY_SIZE );
 			graphDyn->setGraphColor ( nanogui::Color ( 0, 160, 192, 255 ) );
 			graphDyn->setFill ( false );
@@ -177,6 +180,7 @@ class DisplacementMap : public nanogui::Screen {
 			window_test->setPosition ( {mFBSize[0] - console_width - 5, 5} );
 			window_test->setSize ( {console_width, console_height} );
 			window_test->setVisible ( show_console );
+			
 			// window_test->setLayout ( new GroupLayout ( 5, 5, 0, 0 ) );
 			console_test = new nanogui::Console ( window_test );
 			console_test->setPosition ( {5, 5} );
