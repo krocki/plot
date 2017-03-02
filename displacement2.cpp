@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-02 09:56:59
+* @Last Modified time: 2017-03-02 09:59:52
 */
 
 #include <iostream>
@@ -101,6 +101,7 @@ void update_FPS ( void ) {
 }
 
 class DisplacementMap : public nanogui::Screen {
+
 	public:
 		DisplacementMap ( bool fullscreen = false, int aliasing_samples = 8 ) :
 			nanogui::Screen ( Eigen::Vector2i ( 1024, 768 ),
