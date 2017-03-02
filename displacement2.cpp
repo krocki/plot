@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-02 09:59:52
+* @Last Modified time: 2017-03-02 10:16:55
 */
 
 #include <iostream>
@@ -174,60 +174,51 @@ class DisplacementMap : public nanogui::Screen {
 			console ( "GL_VERSION: %s\n\n", version );
 			console ( "glfwGetWindowSize(): %d x %d\n", glfw_window_width, glfw_window_height );
 			
+			// upper left window
 			Window *window = new Window ( this, "" );
 			window->setPosition ( {15, 15} );
 			nanogui::GridLayout *layout =
 				new nanogui::GridLayout ( nanogui::Orientation::Horizontal, 3,
 										  nanogui::Alignment::Middle, 15, 5 );
-			layout->setColAlignment (
-			{ nanogui::Alignment::Maximum, nanogui::Alignment::Fill } );
+			layout->setColAlignment ( { nanogui::Alignment::Maximum, nanogui::Alignment::Fill } );
 			layout->setSpacing ( 0, 10 );
 			window->setLayout ( layout );
-			
-			
 			nanogui::Theme *t = window->theme();
 			t->mWindowFillUnfocused = nanogui::Color ( 128, 128, 128, 64 );
 			window->setTheme ( t );
 			
+			// slider
 			Label *l = new Label ( window, "MODULATION", "sans-bold" );
 			l->setFontSize ( 10 );
 			slider = new nanogui::Slider ( window );
 			slider->setValue ( 0.5f );
 			modulation = 5.0f;
 			slider->setCallback ( [this] ( float value ) { this->modulation = value * 10.0f; } );
+			
+			//checkbox
 			auto_change_box = new nanogui::CheckBox ( window, "auto" );
 			auto_change_box->setCallback ( [this] ( float value ) {
 				auto_change = !auto_change; console ( "auto_change: %d\n", auto_change );
 			} );
 			
-			int graph_width = 110;
-			int graph_height = 15;
+			//bottom left graph
 			graphDyn = add<nanogui::Graph> ( "" );
-			graphDyn->setPosition ( {5, glfw_window_height - graph_height - 5} );
-			graphDyn->setSize ( {graph_width, graph_height } );
 			graphDyn->values().resize ( HISTORY_SIZE );
 			graphDyn->setGraphColor ( nanogui::Color ( 0, 160, 192, 255 ) );
 			// graphDyn->setFill ( true );
 			
 			/* console */
-			int console_width = 350;
-			int console_height = mFBSize[1] - 10;
 			show_console = false;
-			auto_change = true;
+			auto_change = false;
 			
 			window_test = new Window ( this, "" );
-			window_test->setPosition ( {glfw_window_width - console_width - 5, 5} );
-			window_test->setSize ( {console_width, console_height} );
 			window_test->setVisible ( show_console );
 			
 			// window_test->setLayout ( new GroupLayout ( 5, 5, 0, 0 ) );
 			console_test = new nanogui::Console ( window_test );
-			console_test->setPosition ( {5, 5} );
-			console_test->setWidth ( console_width - 10 );
-			console_test->setHeight ( console_height - 10 );
 			console_test->setFontSize ( 12 );
 			
-			performLayout();
+			resizeEvent ( { glfw_window_width, glfw_window_height } );
 			
 		}
 		
@@ -293,6 +284,28 @@ class DisplacementMap : public nanogui::Screen {
 			
 			float mx = 1;
 			float my = 1;
+			
+		}
+		
+		virtual bool resizeEvent ( const Eigen::Vector2i &size ) {
+		
+			int graph_width = 110;
+			int graph_height = 15;
+			graphDyn->setPosition ( {5, size[1] - graph_height - 5} );
+			graphDyn->setSize ( {graph_width, graph_height } );
+			
+			int console_width = 350;
+			int console_height = size[1] - 10;
+			window_test->setPosition ( {size[0] - console_width - 5, 5} );
+			window_test->setSize ( {size[0], size[1]} );
+			
+			console_test->setPosition ( {5, 5} );
+			console_test->setWidth ( console_width - 10 );
+			console_test->setHeight ( console_height - 10 );
+			
+			performLayout();
+			
+			return true;
 			
 		}
 		
