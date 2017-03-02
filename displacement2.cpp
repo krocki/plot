@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-01 19:15:28
+* @Last Modified time: 2017-03-02 09:56:59
 */
 
 #include <iostream>
@@ -102,7 +102,7 @@ void update_FPS ( void ) {
 
 class DisplacementMap : public nanogui::Screen {
 	public:
-		DisplacementMap ( bool fullscreen = false, int aliasing_samples = 4 ) :
+		DisplacementMap ( bool fullscreen = false, int aliasing_samples = 8 ) :
 			nanogui::Screen ( Eigen::Vector2i ( 1024, 768 ),
 							  "NanoGUI Test", true, fullscreen, 8, 8, 24, 8, aliasing_samples,
 							  3, 3 ) {
@@ -149,8 +149,6 @@ class DisplacementMap : public nanogui::Screen {
 			
 		}
 		
-		
-		
 		void console ( const char *pMsg, ... ) {
 		
 			char buffer[4096];
@@ -171,12 +169,21 @@ class DisplacementMap : public nanogui::Screen {
 			const GLubyte *renderer = glGetString ( GL_RENDERER ); // get renderer string
 			const GLubyte *version = glGetString ( GL_VERSION ); // version as a string
 			
-			console ( "Renderer: %s\n", renderer );
-			console ( "OpenGL version supported %s\n", version );
+			console ( "GL_RENDERER: %s\n", renderer );
+			console ( "GL_VERSION: %s\n\n", version );
+			console ( "glfwGetWindowSize(): %d x %d\n", glfw_window_width, glfw_window_height );
 			
 			Window *window = new Window ( this, "" );
 			window->setPosition ( {15, 15} );
-			window->setLayout ( new GroupLayout ( 5, 5, 0, 0 ) );
+			nanogui::GridLayout *layout =
+				new nanogui::GridLayout ( nanogui::Orientation::Horizontal, 3,
+										  nanogui::Alignment::Middle, 15, 5 );
+			layout->setColAlignment (
+			{ nanogui::Alignment::Maximum, nanogui::Alignment::Fill } );
+			layout->setSpacing ( 0, 10 );
+			window->setLayout ( layout );
+			
+			
 			nanogui::Theme *t = window->theme();
 			t->mWindowFillUnfocused = nanogui::Color ( 128, 128, 128, 64 );
 			window->setTheme ( t );
@@ -187,10 +194,14 @@ class DisplacementMap : public nanogui::Screen {
 			slider->setValue ( 0.5f );
 			modulation = 5.0f;
 			slider->setCallback ( [this] ( float value ) { this->modulation = value * 10.0f; } );
+			auto_change_box = new nanogui::CheckBox ( window, "auto" );
+			auto_change_box->setCallback ( [this] ( float value ) {
+				auto_change = !auto_change; console ( "auto_change: %d\n", auto_change );
+			} );
 			
-			int graph_width = 150;
-			int graph_height = 16;
-			graphDyn = add<nanogui::SQGraph> ( "FPS" );
+			int graph_width = 110;
+			int graph_height = 15;
+			graphDyn = add<nanogui::Graph> ( "" );
 			graphDyn->setPosition ( {5, glfw_window_height - graph_height - 5} );
 			graphDyn->setSize ( {graph_width, graph_height } );
 			graphDyn->values().resize ( HISTORY_SIZE );
@@ -201,6 +212,7 @@ class DisplacementMap : public nanogui::Screen {
 			int console_width = 350;
 			int console_height = mFBSize[1] - 10;
 			show_console = false;
+			auto_change = true;
 			
 			window_test = new Window ( this, "" );
 			window_test->setPosition ( {glfw_window_width - console_width - 5, 5} );
@@ -213,23 +225,6 @@ class DisplacementMap : public nanogui::Screen {
 			console_test->setWidth ( console_width - 10 );
 			console_test->setHeight ( console_height - 10 );
 			console_test->setFontSize ( 12 );
-			
-			// w_console = new Window ( this, "" );
-			// w_console->setLayout ( new GroupLayout ( 5, 5, 0, 0 ) );
-			// Label *l2 = new Label ( w_console, "CONSOLE", "sans-bold" );
-			// l2->setFontSize ( 10 );
-			// w_console->setPosition ( {192 + 15, 15} );
-			// w_console->setLayout ( new GroupLayout ( ) );
-			
-			// nanogui::Theme *t_console = w_console->theme();
-			// t_console->mWindowFillUnfocused = nanogui::Color ( 128, 128, 128, 32 );
-			// w_console->setTheme ( t_console );
-			
-			// w_console->setVisible ( show_console );
-			
-			// console_text = w_console->add<nanogui::Console> ( "Log" );
-			// console_text->setSize ( {150, 300} );
-			// console_text->setFontSize ( 10 );
 			
 			performLayout();
 			
@@ -275,17 +270,19 @@ class DisplacementMap : public nanogui::Screen {
 		virtual void draw ( NVGcontext *ctx ) {
 		
 			/* Animate the scrollbar */
-			// slider->setValue ( std::fmod ( ( float ) glfwGetTime() / 20, 1.0f ) );
-			// slider->callback() ( slider->value() );
+			if ( auto_change ) {
+				slider->setValue ( std::fmod ( ( float ) glfwGetTime() / 20, 1.0f ) );
+				slider->callback() ( slider->value() );
+			}
 			
 			graphDyn->values() = Eigen::Map<Eigen::VectorXf> ( FPS.data(), HISTORY_SIZE );
 			
 			char str[16];
 			int last_avg = 10;
-			sprintf ( str, "%3.1f\n", graphDyn->values().block ( HISTORY_SIZE - 1 - last_avg, 0, last_avg, 1 ).mean() );
+			sprintf ( str, "%3.1f FPS\n", graphDyn->values().block ( HISTORY_SIZE - 1 - last_avg, 0, last_avg, 1 ).mean() );
 			
 			// graphDyn->setHeader ( str );
-			graphDyn->setFooter ( str );
+			graphDyn->setHeader ( str );
 			
 			console_test->setValue ( log_str );
 			
@@ -317,13 +314,15 @@ class DisplacementMap : public nanogui::Screen {
 		nanogui::Label *l;
 		nanogui::Slider *slider;
 		nanogui::GLShader mShader;
-		nanogui::SQGraph *graphDyn;
+		nanogui::Graph *graphDyn;
 		nanogui::Window *window_test;
 		nanogui::Console *console_test;
+		nanogui::CheckBox *auto_change_box;
 		std::string log_str;
 		float modulation;
 		
 		bool show_console;
+		bool auto_change;
 		
 };
 
