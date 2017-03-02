@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-02 10:16:55
+* @Last Modified time: 2017-03-02 10:24:52
 */
 
 #include <iostream>
@@ -297,7 +297,7 @@ class DisplacementMap : public nanogui::Screen {
 			int console_width = 350;
 			int console_height = size[1] - 10;
 			window_test->setPosition ( {size[0] - console_width - 5, 5} );
-			window_test->setSize ( {size[0], size[1]} );
+			window_test->setSize ( {console_width, console_height} );
 			
 			console_test->setPosition ( {5, 5} );
 			console_test->setWidth ( console_width - 10 );
