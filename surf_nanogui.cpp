@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-03 09:54:39
+* @Last Modified time: 2017-03-03 10:24:06
 */
 
 #include <iostream>
@@ -62,6 +62,52 @@ void update_FPS ( void ) {
 	}
 }
 
+// * for plotting function
+#define N 100000
+
+float rand_float ( float mn, float mx ) {
+	float r = random() / ( float ) RAND_MAX;
+	return mn + ( mx - mn ) * r;
+}
+
+float hat ( float x, float y ) {
+
+	float t = hypotf ( x, y ) * 4.0;
+	float z = ( 1 - t * t ) * expf ( t * t / -2.0 );
+	return z;
+}
+
+float hue2rgb ( float p, float q, float t ) {
+	float tt = t;
+	if ( tt < 0.0 ) tt += 1.0;
+	if ( tt > 1.0 ) tt -= 1.0;
+	if ( tt < 1.0 / 6.0 ) return p + ( q - p ) * 6.0 * tt;
+	if ( tt < 1.0 / 2.0 ) return q;
+	if ( tt < 2.0 / 3.0 ) return p + ( q - p ) * ( 2.0 / 3.0 - tt ) * 6.0;
+	return p;
+}
+
+Eigen::Vector3f hslToRgb ( float h, float s, float l ) {
+	float r, g, b;
+	if ( s == 0.0 ) {
+		r = g = b = l; // achromatic
+	}
+	else {
+		float q;
+		if ( l < 0.5 )
+			q = l * ( 1.0 + s );
+		else
+			q = l + s - l * s;
+			
+		float p = 2.0 * l - q;
+		r = hue2rgb ( p, q, h + 1.0 / 3.0 );
+		g = hue2rgb ( p, q, h );
+		b = hue2rgb ( p, q, h - 1.0 / 3.0 );
+	}
+	
+	return Eigen::Vector3f ( r, g, b );
+}
+
 class DisplacementMap : public nanogui::Screen {
 
 	public:
@@ -99,43 +145,65 @@ class DisplacementMap : public nanogui::Screen {
 			// colors.col ( 3 ) << 1.0f, 0.0f, 1.0f, 1.0f;
 			
 			/* CUBE */
-			MatrixXu indices ( 3, 12 ); /* Draw a cube */
-			indices.col ( 0 ) << 0, 1, 3;
-			indices.col ( 1 ) << 3, 2, 1;
-			indices.col ( 2 ) << 3, 2, 6;
-			indices.col ( 3 ) << 6, 7, 3;
-			indices.col ( 4 ) << 7, 6, 5;
-			indices.col ( 5 ) << 5, 4, 7;
-			indices.col ( 6 ) << 4, 5, 1;
-			indices.col ( 7 ) << 1, 0, 4;
-			indices.col ( 8 ) << 4, 0, 3;
-			indices.col ( 9 ) << 3, 7, 4;
-			indices.col ( 10 ) << 5, 6, 2;
-			indices.col ( 11 ) << 2, 1, 5;
+			// MatrixXu indices ( 3, 12 ); /* Draw a cube */
+			// indices.col ( 0 ) << 0, 1, 3;
+			// indices.col ( 1 ) << 3, 2, 1;
+			// indices.col ( 2 ) << 3, 2, 6;
+			// indices.col ( 3 ) << 6, 7, 3;
+			// indices.col ( 4 ) << 7, 6, 5;
+			// indices.col ( 5 ) << 5, 4, 7;
+			// indices.col ( 6 ) << 4, 5, 1;
+			// indices.col ( 7 ) << 1, 0, 4;
+			// indices.col ( 8 ) << 4, 0, 3;
+			// indices.col ( 9 ) << 3, 7, 4;
+			// indices.col ( 10 ) << 5, 6, 2;
+			// indices.col ( 11 ) << 2, 1, 5;
 			
-			MatrixXf positions ( 3, 8 );
-			positions.col ( 0 ) << -1,  1,  1;
-			positions.col ( 1 ) << -1,  1, -1;
-			positions.col ( 2 ) <<  1,  1, -1;
-			positions.col ( 3 ) <<  1,  1,  1;
-			positions.col ( 4 ) << -1, -1,  1;
-			positions.col ( 5 ) << -1, -1, -1;
-			positions.col ( 6 ) <<  1, -1, -1;
-			positions.col ( 7 ) <<  1, -1,  1;
+			// MatrixXf positions ( 3, 8 );
+			// positions.col ( 0 ) << -1,  1,  1;
+			// positions.col ( 1 ) << -1,  1, -1;
+			// positions.col ( 2 ) <<  1,  1, -1;
+			// positions.col ( 3 ) <<  1,  1,  1;
+			// positions.col ( 4 ) << -1, -1,  1;
+			// positions.col ( 5 ) << -1, -1, -1;
+			// positions.col ( 6 ) <<  1, -1, -1;
+			// positions.col ( 7 ) <<  1, -1,  1;
 			
-			MatrixXf colors ( 3, 12 );
-			colors.col ( 0 ) << 1, 0, 0;
-			colors.col ( 1 ) << 1, 0, 0;
-			colors.col ( 2 ) << 1, 0, 0;
-			colors.col ( 3 ) << 1, 0, 0;
-			colors.col ( 4 ) << 0, 0, 1;
-			colors.col ( 5 ) << 0, 0, 1;
-			colors.col ( 6 ) << 0, 0, 1;
-			colors.col ( 7 ) << 0, 1, 0;
-			colors.col ( 8 ) << 0, 1, 0;
-			colors.col ( 9 ) << 0, 1, 0;
-			colors.col ( 10 ) << 0, 1, 0;
-			colors.col ( 11 ) << 0, 1, 0;
+			// MatrixXf colors ( 3, 12 );
+			// colors.col ( 0 ) << 1, 0, 0;
+			// colors.col ( 1 ) << 1, 0, 0;
+			// colors.col ( 2 ) << 1, 0, 0;
+			// colors.col ( 3 ) << 1, 0, 0;
+			// colors.col ( 4 ) << 0, 0, 1;
+			// colors.col ( 5 ) << 0, 0, 1;
+			// colors.col ( 6 ) << 0, 0, 1;
+			// colors.col ( 7 ) << 0, 1, 0;
+			// colors.col ( 8 ) << 0, 1, 0;
+			// colors.col ( 9 ) << 0, 1, 0;
+			// colors.col ( 10 ) << 0, 1, 0;
+			// colors.col ( 11 ) << 0, 1, 0;
+			
+			//* FUNCTION */
+			MatrixXu indices ( 1, N );
+			MatrixXf positions ( 3, N );
+			MatrixXf colors ( 3, N );
+			
+			float yRange = 2.0;
+			float yMax = 1.0;
+			
+			for ( size_t i = 0; i < N; i++ ) {
+			
+				indices.col ( i ) << i;
+				
+				float x = rand_float ( -1.0, 1.0 );
+				float y = rand_float ( -1.0, 1.0 );
+				float z = hat ( x, y );
+				
+				positions.col ( i ) << x, y, z;
+				
+				colors.col ( i ) = hslToRgb ( 0.6 * ( yMax - z ) / yRange, 1, 0.5 );
+				
+			}
 			
 			// bind the shader and upload vertex positions and indices
 			
@@ -153,7 +221,7 @@ class DisplacementMap : public nanogui::Screen {
 			// init camera
 			xpos = 0;
 			ypos = 0;
-			zpos = -10;
+			zpos = -4;
 			xang = 0;
 			yang = 0;
 			
@@ -307,29 +375,15 @@ class DisplacementMap : public nanogui::Screen {
 		virtual bool mouseDragEvent ( const Eigen::Vector2i &p, const Eigen::Vector2i &rel, int button,
 									  int modifiers ) {
 									  
-									  
-			printf ( "drag %d %d, %d %d, %d, %d\n", p[0], p[1], rel[0], rel[1], button, modifiers );
 			xang = xang + ( float ) rel[0] / ( ( float ) size() [0] / drag_sensitivity );
 			yang = yang + ( float ) rel[1] / ( ( float ) size() [1] / drag_sensitivity );
+			
 			return true;
 			
 		}
 		
 		virtual void draw ( NVGcontext *ctx ) {
 		
-			// glShadeModel ( GL_SMOOTH );
-			// glHint ( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-			
-			// glEnable ( GL_LINE_SMOOTH );
-			// glHint ( GL_LINE_SMOOTH_HINT, GL_NICEST );
-			// glEnable ( GL_POINT_SMOOTH );
-			// glHint ( GL_POINT_SMOOTH_HINT, GL_NICEST );
-			
-			
-			// glEnable ( GL_DEPTH_TEST ); // enable depth-testing
-			// glDepthFunc ( GL_LESS ); // depth-testing interprets a smaller value as "closer"
-			// glClearColor ( 0.5f, 0.5f, 0.5f, 0.5f );
-			
 			process_keyboard();
 			graphDyn->values() = Eigen::Map<Eigen::VectorXf> ( FPS.data(), HISTORY_SIZE );
 			
@@ -389,19 +443,22 @@ class DisplacementMap : public nanogui::Screen {
 		
 			mShader.bind();
 			
-			glEnable ( GL_BLEND );
-			glBlendEquation ( GL_FUNC_ADD );
-			glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			// glShadeModel ( GL_SMOOTH );
+			// glHint ( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+			
+			// glEnable ( GL_LINE_SMOOTH );
+			// glHint ( GL_LINE_SMOOTH_HINT, GL_NICEST );
+			// glEnable ( GL_POINT_SMOOTH );
+			// glHint ( GL_POINT_SMOOTH_HINT, GL_NICEST );
 			
 			//glEnable ( GL_DEPTH_TEST );
-			/* Draw 12 triangles starting at index 0 */
 			
 			glUniform3f ( uniform_offset, xpos, ypos, zpos );
 			glUniform2f ( uniform_angle, xang, yang );
 			
-			mShader.drawIndexed ( GL_TRIANGLES, 0, 12 );
+			// mShader.drawIndexed ( GL_TRIANGLES, 0, N );
+			mShader.drawIndexed ( GL_POINTS, 0, N );
 			//glDisable ( GL_DEPTH_TEST );
-			glDisable ( GL_BLEND );
 		}
 		
 		nanogui::GLShader mShader;
