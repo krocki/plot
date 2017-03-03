@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-02-28 11:25:34
 * @Last Modified by:   Kamil Rocki
-* @Last Modified time: 2017-03-03 10:24:06
+* @Last Modified time: 2017-03-03 10:34:30
 */
 
 #include <iostream>
@@ -229,15 +229,16 @@ class DisplacementMap : public nanogui::Screen {
 			keyboard_sensitivity = 0.1f;
 			
 			// http://code.nabla.net/doc/OpenGL/api/OpenGL/man/glFrustum.html
-			//setup perspective
+			// setup perspective
 			float fFrustumScale = 3.5f;
 			float aspect = ( float ) size() [0] / ( float ) size() [1];
 			float fzNear = 0.5f;
 			float fzFar = 1000.0f;
-			//THE MATRIX
+			// THE MATRIX
 			float theMatrix[16];
 			memset ( theMatrix, 0, sizeof ( float ) * 16 );
-			//build perspective matrix
+			
+			// build perspective matrix
 			theMatrix[0] = fFrustumScale / aspect;
 			theMatrix[5] = fFrustumScale;
 			theMatrix[10] = ( fzFar + fzNear ) / ( fzNear - fzFar );
@@ -266,12 +267,11 @@ class DisplacementMap : public nanogui::Screen {
 			int glfw_window_width, glfw_window_height;
 			glfwGetWindowSize ( glfwWindow(), &glfw_window_width, &glfw_window_height );
 			
-			// get version info
-			const GLubyte *renderer = glGetString ( GL_RENDERER ); // get renderer string
-			const GLubyte *version = glGetString ( GL_VERSION ); // version as a string
+			// get GL debug info
+			console ( "GL_RENDERER: %s\n", glGetString ( GL_RENDERER ) );
+			console ( "GL_VERSION: %s\n", glGetString ( GL_VERSION ) );
+			console ( "GLSL_VERSION: %s\n\n", glGetString ( GL_SHADING_LANGUAGE_VERSION ) );
 			
-			console ( "GL_RENDERER: %s\n", renderer );
-			console ( "GL_VERSION: %s\n\n", version );
 			console ( "glfwGetWindowSize(): %d x %d\n", glfw_window_width, glfw_window_height );
 			
 			//bottom left graph
